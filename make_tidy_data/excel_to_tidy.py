@@ -212,7 +212,7 @@ df_plot.columns = ['국가', '투표율']
 top20 = df_plot.sort_values('투표율', ascending=False).head(100)
 
 # 그래프 그리기
-plt.figure(figsize=(14, 40))
+plt.figure(figsize=(14, 60))
 ax = sns.barplot(
     data=top20,
     x='투표율',
@@ -236,5 +236,5 @@ plt.xlabel('투표율 (%)')
 plt.ylabel('국가')
 plt.xlim(0, 100)
 plt.tight_layout()
-plt.savefig('vote_rate_top20.png', dpi=300, bbox_inches='tight')
+plt.savefig('img/vote_rate_top_nation.png', dpi=300, bbox_inches='tight')
 plt.show()
