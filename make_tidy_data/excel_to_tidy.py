@@ -231,10 +231,12 @@ for i, (value, name) in enumerate(zip(top20['투표율'], top20['국가'])):
         fontsize=10)
 
 # 제목/레이 설정
-plt.title('22대 총선 국가별 투표율 상위 100개국', fontsize=16)
-plt.xlabel('투표율 (%)')
-plt.ylabel('국가')
-plt.xlim(0, 100)
-plt.tight_layout()
-plt.savefig('img/vote_rate_top_nation.png', dpi=300, bbox_inches='tight')
-plt.show()
+# plt.title('22대 총선 국가별 투표율 상위 100개국', fontsize=16)
+# plt.xlabel('투표율 (%)')
+# plt.ylabel('국가')
+# plt.xlim(0, 100)
+# plt.tight_layout()
+# plt.savefig('img/vote_rate_top_nation.png', dpi=300, bbox_inches='tight')
+# plt.show()
+
+print(df_tidy[df_tidy['국가'] == '미국'].head())
