@@ -28,41 +28,24 @@ selected_keys = [
 filtered_list = [{key: item.get(key, None) for key in selected_keys} for item in items]
 df = pd.DataFrame(filtered_list)
 
-group_keys = {
-    'attention_info': ['attention', 'attention_note', 'attention_partial'],
-    'ban_info': ['ban_note', 'ban_yna', 'ban_yn_partial'],
-    'control_info': ['control', 'control_note', 'control_partial'],
-    'limita_info': ['limita', 'limita_note', 'limita_partial'],
-}
-
-def clean_dict(row):
-    cleaned = {k: v for k, v in row.items() if pd.notnull(v) and str(v).strip() != ''}
-    return cleaned if cleaned else None
-
-for new_col, cols in group_keys.items():
-    df[new_col] = df[cols].apply(clean_dict, axis=1)
-
-df = df.drop(columns=[col for cols in group_keys.values() for col in cols])
-
 # 분석 대상 국가 정보만 필터링
-country_iso_map = {
-    "미국": "US", "중국": "CN", "일본": "JP", "러시아": "RU", "우즈베키스탄": "UZ",
-    "베트남": "VN", "캐나다": "CA", "호주": "AU", "카자흐스탄": "KZ", "독일": "DE",
-    "브라질": "BR", "영국": "GB", "필리핀": "PH", "뉴질랜드": "NZ", "프랑스": "FR",
-    "아르헨티나": "AR", "키르기즈공화국": "KG", "태국": "TH", "인도네시아": "ID", "우크라이나": "UA"
-}
-target_country_names = list(country_iso_map.keys())
+target_countries = [
+    "미국", "중국", "일본", "캐나다", "호주", "독일", "브라질", "영국",
+    "필리핀", "뉴질랜드", "프랑스", "아르헨티나", "스페인", "페루", "에콰도르",
+    "멕시코", "과테말라", "칠레", "싱가포르", "파라과이"
+]
 
-filtered_df = df[df['country_name'].isin(target_country_names)].copy()
-filtered_df = filtered_df.reset_index(drop=True)
-filtered_df = filtered_df.rename(columns={
-    'continent': '대륙',
-    'country_name': '국가명',
-    'wrt_dt': '등록일',
-    'attention_info': '여행유의',
-    'ban_info': '여행금지',
-    'control_info': '여행자제',
-    'limita_info': '철수권고',
-    })
+df = df[df['country_name'].isin(target_countries)].copy()
 
-filtered_df.to_csv('travel_warning.csv', index=False, encoding='utf-8-sig')
+# 4. 필요한 컬럼만 추출해서 각각 저장
+df_attention = df[["country_name", "wrt_dt", "attention", "attention_note", "attention_partial"]]
+df_attention.to_csv("attention_info.csv", index=False, encoding="utf-8-sig")
+
+df_ban = df[["country_name", "wrt_dt", "ban_note", "ban_yn_partial", "ban_yna"]]
+df_ban.to_csv("ban_info.csv", index=False, encoding="utf-8-sig")
+
+df_control = df[["country_name", "wrt_dt", "control", "control_note", "control_partial"]]
+df_control.to_csv("control_info.csv", index=False, encoding="utf-8-sig")
+
+df_limita = df[["country_name", "wrt_dt", "limita", "limita_note", "limita_partial"]]
+df_limita.to_csv("limita_info.csv", index=False, encoding="utf-8-sig")

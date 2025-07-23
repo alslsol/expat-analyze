@@ -84,6 +84,7 @@ def filter_countries(df_wide, country_iso_map):
     return filtered_df_wide
 
 # 실행
+import matplotlib.pyplot as plt
 def load_and_process_election_data(filepath):
     country_iso_map = {
         "미국": "US", "중국": "CN", "일본": "JP", "러시아": "RU", "우즈베키스탄": "UZ",
@@ -95,19 +96,28 @@ def load_and_process_election_data(filepath):
     df_raw = load_raw_data(filepath)
     start_idx = find_data_start(df_raw)
     df = set_header_and_fill(df_raw, start_idx)
-    print(df)
     df = process_gender(df)
     df = fill_country(df)
     df_tidy = melt_data(df)
     df_tidy = clean_values(df_tidy)
+
     df_filtered = filter_summary(df_tidy)
+
+
     df_wide = pivot_wide(df_filtered)
+    
+    # df_filtered = df_wide[df_wide["선거인수"] >= 30].sort_values(by="선거인수")
+    # print(df_filtered.head(50))
+    # print(df_filtered.info())
+    filtered_count = df_wide[df_wide['국가'] != '합계']['국가'].count()
+    print(f"'합계' 제외한 국가 수: {filtered_count}")
+
+
     filtered_df_wide = filter_countries(df_wide, country_iso_map)
 
     return df_tidy, filtered_df_wide
 
 
 # 사용 예시
-tidy_df, wide_df = load_and_process_election_data('raw_data/21대총선.xlsx')
-wide_df.to_csv('21대총선_전처리.csv', index=False, encoding='utf-8-sig')
-print(wide_df.head())
+tidy_df, wide_df = load_and_process_election_data('raw_data/20대대선_총합.xlsx')
+# wide_df.to_csv('21대총선_전처리.csv', index=False, encoding='utf-8-sig')
